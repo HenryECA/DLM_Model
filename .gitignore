@@ -1,0 +1,9 @@
+# Ignore data folders
+data/
+forecasts/
+results/
+snp500_results/
+synth_results/
+
+# Optionally, also ignore virtual environment
+tfg_venv/
