@@ -1,5 +1,4 @@
 # Ignore data folders
-data/
 forecasts/
 results/
 snp500_results/
