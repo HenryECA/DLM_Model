@@ -9,3 +9,7 @@ torchvision
 torchtext
 transformers
 datasets
+yfinance
+seaborn
+arch
+dataframe-image

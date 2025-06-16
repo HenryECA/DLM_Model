@@ -152,15 +152,15 @@ class HierarchicalTree:
             Sigma = base_Sigma.copy()
             
             # 2) try ridge alphas from 1e-6 up to 5e-2 until cond(Sigma)<1e5
-            alphas = np.concatenate([
-                np.logspace(-6, -3, num=10),    # from 1e-6 → 1e-3
-                np.linspace(1e-3, 5e-2, num=20)  # from 1e-3 → 5e-2
+            alphas     = np.concatenate([
+                np.logspace(-6, -2, num=15),
+                np.linspace(1e-3, 2e-2, num=10)
             ])
             
             for alpha in alphas:
                 eps   = alpha * (trace / m)
                 Sigma = base_Sigma + eps * np.eye(m)
-                if np.linalg.cond(Sigma) < 1e5:
+                if np.linalg.cond(Sigma) < 1e3:
                     # found a stable Σ
                     break
             else:
@@ -202,15 +202,15 @@ class HierarchicalTree:
 
             # 5) dynamic ridge until cond<1e5
             trace   = np.trace(base_Sigma)
-            alphas  = np.concatenate([
-                np.logspace(-6, -3, num=10),
-                np.linspace(1e-3, 5e-2, num=20)
+            alphas     = np.concatenate([
+                np.logspace(-6, -2, num=15),
+                np.linspace(1e-3, 2e-2, num=10)
             ])
 
             for alpha in alphas:
                 eps   = alpha * (trace / m)
                 Sigma = base_Sigma + eps * np.eye(m)
-                if np.linalg.cond(Sigma) < 1e5:
+                if np.linalg.cond(Sigma) < 1e3:
                     break
             else:
                 # fallback to the largest alpha if none worked
@@ -227,14 +227,14 @@ class HierarchicalTree:
             trace      = np.trace(base_Sigma)
             m          = base_Sigma.shape[0]
             alphas     = np.concatenate([
-                np.logspace(-6, -3, num=10),
-                np.linspace(1e-3, 5e-2, num=20)
+                np.logspace(-6, -2, num=15),
+                np.linspace(1e-3, 2e-2, num=10)
             ])
 
             for alpha in alphas:
                 eps   = alpha * (trace / m)
                 Sigma = base_Sigma + eps * np.eye(m)
-                if np.linalg.cond(Sigma) < 1e5:
+                if np.linalg.cond(Sigma) < 1e3:
                     break
             else:
                 # never broke → use the strongest ridge

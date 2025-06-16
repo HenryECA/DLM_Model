@@ -162,9 +162,9 @@ def main(hierarchy, series, results_path, train_ratio=0.8, s_matrix="summing"):
                     if node not in results[h][method][var]:
                         results[h][method][var][node] = {}
                     if reconciled_results is not None:
-                        mu_scale = reconciled_results[0][node].values
+                        mu_scale = reconciled_results[0][node].values.reshape(1, -1)
                         mu = models[node].scaler.inverse_transform(mu_scale).flatten().tolist() if mu_scale is not None else None
-                        std_scale = reconciled_results[1][node].values * models[node].scaler.scale_[0].flatten().tolist() if reconciled_results[1] is not None else None
+                        std_scale = (reconciled_results[1][node].values.reshape(1, -1) * models[node].scaler.scale_[0]).flatten().tolist() if reconciled_results[1] is not None else None
                         results[h][method][var][node] = {
                             'mu': mu,
                             'std': std_scale
@@ -182,8 +182,8 @@ def main(hierarchy, series, results_path, train_ratio=0.8, s_matrix="summing"):
         for node in tree.all_nodes:
             base_test[h][node]['base'] = {}
             # Add the base to results dict
-            mu = models[node].scaler.inverse_transform(horizon_predictions[h][node].values).flatten().tolist()
-            std = horizon_variances[h][node].values * models[node].scaler.scale_[0].flatten().tolist() if horizon_variances[h][node] is not None else None
+            mu = models[node].scaler.inverse_transform(horizon_predictions[h][node].values.reshape(1, -1)).flatten().tolist()
+            std = (horizon_variances[h][node].values.reshape(1, -1) * models[node].scaler.scale_[0]).flatten().tolist() if horizon_variances[h][node] is not None else None
             base_test[h][node]['base']['base'] = {
                 'y': list(models[node].test_unscaled[h:]),
                 'mu': mu,
@@ -244,8 +244,8 @@ def main(hierarchy, series, results_path, train_ratio=0.8, s_matrix="summing"):
 
             # Now add the results for the base forecasts (no reconciliation)
             y = models[node].test_unscaled[h:]
-            mu = horizon_predictions[h][node].values
-            std = horizon_variances[h][node].values if horizon_variances[h][node] is not None else None
+            mu = models[node].scaler.inverse_transform(horizon_predictions[h][node].values.reshape(1, -1)).flatten()
+            std = (horizon_variances[h][node].values.reshape(1, -1) * models[node].scaler.scale_[0]).flatten() if horizon_variances[h][node] is not None else None
 
             met = run_metrics(y, mu, std, alpha=alpha)
 
@@ -327,7 +327,7 @@ if __name__ == "__main__":
     # main(
     #     hierarchy=hierarchy,
     #     series=series,
-    #     results_path=r"D:\Documentos\ICAI\TFG\Code\DLM Model\synth_results\reconciliation_regression", 
+    #     results_path=r"C:\Users\202109355\Documents\DLM_Model\synth_results\reconciliation_scale", 
     #     s_matrix="regression",  # Change to "summing" for classic reconciliation
     # )
 
@@ -345,7 +345,7 @@ if __name__ == "__main__":
     main(
         hierarchy=hierarchy,
         series=series,
-        results_path=r"D:\Documentos\ICAI\TFG\Code\DLM Model\snp500_results\reconciliation2", 
-        train_ratio=100,
+        results_path=r"C:\Users\202109355\Documents\DLM_Model\snp500_results\reconciliation3", 
+        train_ratio=200,
         s_matrix="regression"
     )
